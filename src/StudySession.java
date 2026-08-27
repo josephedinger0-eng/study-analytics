@@ -46,4 +46,13 @@ public class StudySession {
     public void setScore(double score) {
         this.score = score;
     }
+
+    public String toString() {
+        return "StudySession: " +
+                "subject = '" + subject + '\'' +
+                ", topic = '" + topic + '\'' +
+                ", minutes = " + minutes +
+                ", score = " + score +
+                '}';
+    }
 }
