@@ -1,12 +1,14 @@
 import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.ArrayList;
+import java.util.HashMap;
 public class Main {
 	public static void main(String[] args) {
 
         // Creating objects and variables
         Scanner scanner = new Scanner(System.in);
         ArrayList<StudySession> studySessions = new ArrayList<>();
+        StudyAnalytics analytics = new StudyAnalytics(studySessions);
         boolean running = true;
 
         while(running) {
@@ -106,15 +108,16 @@ public class Main {
                     if(studySessions.isEmpty()) {
                         System.out.println("No study sessions recorded yet.");
                     } else {
-                        int totalMinutes = 0;
-                        double totalScore = 0;
-                        for(StudySession sessionB : studySessions) {
-                            totalMinutes += sessionB.getMinutes();
-                            totalScore += sessionB.getScore();
-                        }
-                        double averageScore = totalScore / studySessions.size();
+                        int totalMinutes = analytics.getTotalMinutes();
+                        double averageScore = analytics.getAverageScore();
+                        HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();
+                        
                         System.out.println("Total Study Time: " + totalMinutes + " minutes");
                         System.out.println("Average Score: " + averageScore);
+                        System.out.println("Study Time by Subject:");
+                        for (String subjectA : subjectMinutes.keySet()) {
+                            System.out.println("  " + subjectA + ": " + subjectMinutes.get(subjectA) + " minutes");
+                        }
                     }
                     break;
                 case 4: 
