@@ -28,7 +28,7 @@ public class Main {
                     choice = scanner.nextInt();
                     scanner.nextLine(); // Consume the newline character
                     if (choice < 1 || choice > 4) {
-                        System.out.println("Invalid input: Please select a number between 1 and 3.");
+                        System.out.println("Invalid input: Please select a number between 1 and 4.");
                     } else {
                         validChoice = true;
                     }
@@ -40,64 +40,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // User input for subject
-                    System.out.print("Enter your subject: ");
-                    String subject;
-                    subject = scanner.nextLine();
-
-                    // User input for topic
-                    System.out.print("Enter your topic: ");
-                    String topic;
-                    topic = scanner.nextLine();
-
-                    // User input for minutes
-                    System.out.print("Enter the number of minutes: ");
-
-                    int minutes = 0; 
-                    boolean validMinutes = false;
-
-
-                    // Try-Catch to handle InputMismatchExceptions
-                    while(!validMinutes){
-                        try {
-                            minutes = scanner.nextInt();
-                            scanner.nextLine(); // Consume the newline character
-                            if(minutes <= 0){
-                                System.out.println("Invalid Input: Please enter a positive integer.");
-                            } else {
-                                validMinutes = true;
-                            }
-                        } catch (InputMismatchException e){
-                            System.out.println("Invalid Input: Please enter an integer.");
-                            scanner.next();
-                        }
-                    }
-
-                    // User input for score
-                    System.out.print("Enter your score: ");
-                    double score = 0;
-                    boolean validScore = false;
-
-                    // Try-Catch to handle InputMismatchExceptions
-                    while (!validScore) {
-                        try {
-                            score = scanner.nextDouble();
-                            scanner.nextLine(); // Consume the newline character
-                            if (score < 0 || score > 100) {
-                                System.out.println("Invalid input: Please enter a score between 0 and 100.");
-                            } else {
-                                validScore = true;
-                            }
-                        } catch (InputMismatchException e) {
-                            System.out.println("Invalid input: Please enter a valid double for the score.");
-                            scanner.next(); // Clear the invalid input
-                        }
-                    }
-
-                    // Creating a StudySession with the user inputs and printing
-                    StudySession session = new StudySession(subject, topic, minutes, score);
-                    studySessions.add(session);
-                    System.out.println("Study session added successfully! You currently have " + studySessions.size() + " study session(s).");
+                    addStudySession(scanner, studySessions);
                     break;
                 case 2:
                     for(StudySession sessionA : studySessions) {
@@ -128,8 +71,76 @@ public class Main {
                     System.out.println("Invalid option. Please try again.");
             }
         }
-
         scanner.close();
-
 	}
+
+    // Method to add a new study session
+    public static void addStudySession(Scanner scanner, ArrayList<StudySession> studySessions) {
+        // User input for subject
+        System.out.print("Enter your subject: ");
+        String subject = scanner.nextLine();
+
+        // User input for topic
+        System.out.print("Enter your topic: ");
+        String topic = scanner.nextLine();
+        
+        // User input for minutes
+        System.out.print("Enter the number of minutes: ");
+        int minutes = getPositiveInteger(scanner);
+
+        // User input for score
+        System.out.print("Enter your score: ");
+        double score = getValidScore(scanner);
+
+        // Creating a StudySession with the user inputs and printing
+        StudySession session = new StudySession(subject, topic, minutes, score);
+        studySessions.add(session);
+        System.out.println("Study session added successfully! You currently have " + studySessions.size() + " study session(s).");
+    }
+
+    // Method to get a positive integer from the user
+    public static int getPositiveInteger(Scanner scanner){
+        int minutes = 0; 
+        boolean validMinutes = false;
+
+        // Try-Catch to handle InputMismatchExceptions
+         while(!validMinutes){
+            try {
+                minutes = scanner.nextInt();
+                if(minutes <= 0){
+                    System.out.println("Invalid Input: Please enter a positive integer.");
+                } else {
+                    scanner.nextLine(); // Consume the newline character
+                    validMinutes = true;
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Invalid Input: Please enter an integer.");
+                scanner.next();
+            }
+        }
+        return minutes;
+    }
+
+    // Method to get a valid score between 0 and 100
+    public static double getValidScore(Scanner scanner){
+        double score = 0;
+        boolean validScore = false;
+
+        // Try-Catch to handle InputMismatchExceptions
+        while (!validScore) {
+            try {
+                score = scanner.nextDouble();
+                if (score < 0 || score > 100) {
+                    System.out.println("Invalid input: Please enter a score between 0 and 100.");
+                } else {
+                    scanner.nextLine(); // Consume the newline character
+                    validScore = true;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input: Please enter a valid double for the score.");
+                scanner.next(); // Clear the invalid input
+            }
+        }
+        return score;
+    }
 }
