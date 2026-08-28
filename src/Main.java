@@ -77,12 +77,10 @@ public class Main {
     // Method to add a new study session
     public static void addStudySession(Scanner scanner, ArrayList<StudySession> studySessions) {
         // User input for subject
-        System.out.print("Enter your subject: ");
-        String subject = scanner.nextLine();
+        String subject = getNonEmptyString(scanner, "Enter your subject: ");
 
-        // User input for topic
-        System.out.print("Enter your topic: ");
-        String topic = scanner.nextLine();
+        // User input for topic1 
+        String topic = getNonEmptyString(scanner, "Enter your topic: ");
         
         // User input for minutes
         System.out.print("Enter the number of minutes: ");
@@ -142,5 +140,21 @@ public class Main {
             }
         }
         return score;
+    }
+
+    public static String getNonEmptyString(Scanner scanner, String prompt) {
+        String input = "";
+        boolean validInput = false;
+
+        while (!validInput) {
+            System.out.print(prompt);
+            input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Invalid input: Please enter a non-empty string.");
+            } else {
+                validInput = true;
+            }
+        }
+        return input;
     }
 }
