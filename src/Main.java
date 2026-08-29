@@ -2,6 +2,12 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+import java.time.LocalDate;
+
+/* 
+ * Main class for the Study Session Tracker application.
+ */
 public class Main {
 	public static void main(String[] args) {
 
@@ -11,8 +17,11 @@ public class Main {
         StudyAnalytics analytics = new StudyAnalytics(studySessions);
         boolean running = true;
 
+        /*
+         * Main application loop
+         */
         while(running) {
-            System.out.println("Welcome to the Study Session Tracker!");
+            System.out.println("\nWelcome to the Study Session Tracker!");
             System.out.println("1. Add a new study session");
             System.out.println("2. View all study sessions");
             System.out.println("3. View study session summary");
@@ -22,7 +31,10 @@ public class Main {
             int choice = 0;
             boolean validChoice = false;
 
-            // Try-Catch to handle InputMismatchExceptions
+            /*
+             * This loop continues until a valid choice between 1 and 4 is entered.
+             * It handles InputMismatchExceptions to ensure the user enters a valid integer.
+             */
             while (!validChoice) {
                 try {
                     choice = scanner.nextInt();
@@ -38,6 +50,9 @@ public class Main {
                 }
             }
 
+            /*
+             * This switch statement handles the user's choice and executes the corresponding action.
+             */
             switch (choice) {
                 case 1:
                     addStudySession(scanner, studySessions);
@@ -55,18 +70,28 @@ public class Main {
                         double averageScore = analytics.getAverageScore();
                         HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();
                         HashMap<String, Double> topicAverageScores = analytics.getAverageScoreByTopic();
+                        TreeMap<LocalDate, Integer> dateMinutes = analytics.getMinutesByDate();
                         
                         System.out.println("\nStudy Summary");
                         System.out.println("-------------------------");
+                        
                         System.out.println("\nTotal Study Time: " + totalMinutes + " minutes");
-                        System.out.println("\nAverage Score: " + averageScore);
+                        
+                        System.out.printf("\nAverage Score: %.1f%n", averageScore);
+                        
                         System.out.println("\nStudy Time by Subject:");
                         for (String subjectA : subjectMinutes.keySet()) {
                             System.out.println("  " + subjectA + ": " + subjectMinutes.get(subjectA) + " minutes");
                         }
+                        
                         System.out.println("Average Scores by Topic:");
                         for(String topicA : topicAverageScores.keySet()) {
                             System.out.printf("  %s: %.1f%n", topicA, topicAverageScores.get(topicA));
+                        }
+
+                        System.out.println("\nStudy Time by Date:");
+                        for (LocalDate dateA : dateMinutes.keySet()) {
+                            System.out.println("  " + dateA + ": " + dateMinutes.get(dateA) + " minutes");
                         }
                     }
                     break;
@@ -98,7 +123,8 @@ public class Main {
         double score = getValidScore(scanner);
 
         // Creating a StudySession with the user inputs and printing
-        StudySession session = new StudySession(subject, topic, minutes, score);
+        LocalDate date = LocalDate.now();
+        StudySession session = new StudySession(date, subject, topic, minutes, score);
         studySessions.add(session);
         System.out.println("Study session added successfully! You currently have " + studySessions.size() + " study session(s).");
     }
@@ -108,7 +134,10 @@ public class Main {
         int minutes = 0; 
         boolean validMinutes = false;
 
-        // Try-Catch to handle InputMismatchExceptions
+        /* 
+            * This loop continues until a valid positive integer is entered.
+            * It handles InputMismatchExceptions to ensure the user enters a valid integer.
+        */
          while(!validMinutes){
             try {
                 minutes = scanner.nextInt();
@@ -131,7 +160,10 @@ public class Main {
         double score = 0;
         boolean validScore = false;
 
-        // Try-Catch to handle InputMismatchExceptions
+        /* 
+            * This loop continues until a valid score between 0 and 100 is entered.
+            * It handles InputMismatchExceptions to ensure the user enters a valid double.
+        */
         while (!validScore) {
             try {
                 score = scanner.nextDouble();
@@ -146,13 +178,17 @@ public class Main {
                 scanner.next(); // Clear the invalid input
             }
         }
-        return score;
+        return score; // Return the valid score
     }
 
+    // Method to get a non-empty string from the user
     public static String getNonEmptyString(Scanner scanner, String prompt) {
-        String input = "";
-        boolean validInput = false;
+        String input = ""; // Initialize input variable
+        boolean validInput = false; // Flag to check if the input is valid
 
+        /*
+         * This loop continues until a valid non-empty string is entered.
+         */
         while (!validInput) {
             System.out.print(prompt);
             input = scanner.nextLine().trim();
@@ -162,6 +198,6 @@ public class Main {
                 validInput = true;
             }
         }
-        return input;
+        return input; // Return the valid non-empty string
     }
 }

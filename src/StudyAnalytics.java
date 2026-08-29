@@ -1,6 +1,11 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+import java.time.LocalDate;
 
+/* 
+ * Class to analyze study sessions and provide various summaries.
+ */
 public class StudyAnalytics {
 
     private ArrayList<StudySession> studySessions; // The list of study sessions to analyze
@@ -16,7 +21,7 @@ public class StudyAnalytics {
         for (StudySession session : studySessions){
             totalMinutes += session.getMinutes();
         }
-        return totalMinutes;
+        return totalMinutes; // Return the total study time in minutes
     }
 
     // Method to calculate the average score across all study sessions
@@ -43,7 +48,7 @@ public class StudyAnalytics {
                 subjectMinutes.put(subject, minutes);
             }
         }
-        return subjectMinutes;
+        return subjectMinutes; // Return the HashMap containing total minutes by subject
     }
 
     // Method to get a breakdown of average scores by topic
@@ -71,6 +76,21 @@ public class StudyAnalytics {
             int count = topicCounts.get(topic);
             averageScores.put(topic, totalScore / count);
         }
-        return averageScores;
+        return averageScores; // Return the HashMap containing average scores by topic
+    }
+
+    // Method to get a breakdown of total study time by date
+    public TreeMap<LocalDate, Integer> getMinutesByDate() {
+        TreeMap<LocalDate, Integer> dateMinutes = new TreeMap<>();
+        for (StudySession session : studySessions) {
+            LocalDate date = session.getDate();
+            int minutes = session.getMinutes();
+            if (dateMinutes.containsKey(date)) {
+                dateMinutes.put(date, dateMinutes.get(date) + minutes);
+            } else {
+                dateMinutes.put(date, minutes);
+            }
+        }
+        return dateMinutes; // Return the TreeMap containing total minutes by date
     }
 }

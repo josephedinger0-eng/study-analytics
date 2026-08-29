@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 /**
  * Represents a single study session and its associated performance data.
  */
@@ -7,9 +8,11 @@ public class StudySession {
     private String topic; // The specific topic within the subject
     private int minutes; // The duration of the study session in minutes
     private double score; // The score achieved in the study session, typically between 0 and 100
+    private LocalDate date; // The date of the study session
 
     // Constructor to initialize a StudySession object with the provided parameters
-    public StudySession(String subject, String topic, int minutes, double score) {
+    public StudySession(LocalDate date, String subject, String topic, int minutes, double score) {
+        this.date = date;
         this.subject = subject;
         this.topic = topic;
         this.minutes = minutes;
@@ -17,6 +20,10 @@ public class StudySession {
     }
 
     // Getters and setters
+    public LocalDate getDate() {
+        return date;
+    }
+
     public String getSubject() {
         return subject;
     }
@@ -50,12 +57,14 @@ public class StudySession {
     }
 
     // Override the toString method to provide a string representation of the StudySession object
+    @Override
     public String toString() {
-        return "StudySession: " +
-                "subject = '" + subject + '\'' +
+        return "StudySession: " + 
+                "date = " + date +
+                ", subject = '" + subject + '\'' +
                 ", topic = '" + topic + '\'' +
                 ", minutes = " + minutes +
                 ", score = " + score +
-                '}';
+                '}'; 
     }
 }
