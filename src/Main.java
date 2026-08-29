@@ -54,12 +54,19 @@ public class Main {
                         int totalMinutes = analytics.getTotalMinutes();
                         double averageScore = analytics.getAverageScore();
                         HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();
+                        HashMap<String, Double> topicAverageScores = analytics.getAverageScoreByTopic();
                         
-                        System.out.println("Total Study Time: " + totalMinutes + " minutes");
-                        System.out.println("Average Score: " + averageScore);
-                        System.out.println("Study Time by Subject:");
+                        System.out.println("\nStudy Summary");
+                        System.out.println("-------------------------");
+                        System.out.println("\nTotal Study Time: " + totalMinutes + " minutes");
+                        System.out.println("\nAverage Score: " + averageScore);
+                        System.out.println("\nStudy Time by Subject:");
                         for (String subjectA : subjectMinutes.keySet()) {
                             System.out.println("  " + subjectA + ": " + subjectMinutes.get(subjectA) + " minutes");
+                        }
+                        System.out.println("Average Scores by Topic:");
+                        for(String topicA : topicAverageScores.keySet()) {
+                            System.out.printf("  %s: %.1f%n", topicA, topicAverageScores.get(topicA));
                         }
                     }
                     break;

@@ -45,4 +45,32 @@ public class StudyAnalytics {
         }
         return subjectMinutes;
     }
+
+    // Method to get a breakdown of average scores by topic
+    public HashMap<String, Double> getAverageScoreByTopic(){
+        HashMap<String, Double> topicTotalScores = new HashMap<>();
+        HashMap<String, Integer> topicCounts = new HashMap<>();
+
+        for (StudySession session : studySessions) {
+            String topic = session.getTopic();
+            double score = session.getScore();
+
+            if (topicTotalScores.containsKey(topic)) {
+                topicTotalScores.put(topic, topicTotalScores.get(topic) + score);
+                topicCounts.put(topic, topicCounts.get(topic) + 1);
+            } else {
+                topicTotalScores.put(topic, score);
+                topicCounts.put(topic, 1);
+            }
+        }
+
+        // Calculate average scores for each topic
+        HashMap<String, Double> averageScores = new HashMap<>();
+        for (String topic : topicTotalScores.keySet()) {
+            double totalScore = topicTotalScores.get(topic);
+            int count = topicCounts.get(topic);
+            averageScores.put(topic, totalScore / count);
+        }
+        return averageScores;
+    }
 }
