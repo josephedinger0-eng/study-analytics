@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 /* 
  * Main class for the Study Session Tracker application.
@@ -71,20 +72,21 @@ public class Main {
                         HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();
                         HashMap<String, Double> topicAverageScores = analytics.getAverageScoreByTopic();
                         TreeMap<LocalDate, Integer> dateMinutes = analytics.getMinutesByDate();
+                        int longestStreak = analytics.getLongestStreak();
                         
                         System.out.println("\nStudy Summary");
                         System.out.println("-------------------------");
                         
                         System.out.println("\nTotal Study Time: " + totalMinutes + " minutes");
-                        
-                        System.out.printf("\nAverage Score: %.1f%n", averageScore);
+                        System.out.println("Longest Study Streak: " + longestStreak + " days");
+                        System.out.printf("Average Score: %.1f%n", averageScore);
                         
                         System.out.println("\nStudy Time by Subject:");
                         for (String subjectA : subjectMinutes.keySet()) {
                             System.out.println("  " + subjectA + ": " + subjectMinutes.get(subjectA) + " minutes");
                         }
                         
-                        System.out.println("Average Scores by Topic:");
+                        System.out.println("\nAverage Scores by Topic:");
                         for(String topicA : topicAverageScores.keySet()) {
                             System.out.printf("  %s: %.1f%n", topicA, topicAverageScores.get(topicA));
                         }
@@ -93,8 +95,8 @@ public class Main {
                         for (LocalDate dateA : dateMinutes.keySet()) {
                             System.out.println("  " + dateA + ": " + dateMinutes.get(dateA) + " minutes");
                         }
-                    }
                     break;
+                    }
                 case 4: 
                     running = false;
                     System.out.println("Exiting the Study Session Tracker. Goodbye!");
@@ -123,7 +125,8 @@ public class Main {
         double score = getValidScore(scanner);
 
         // Creating a StudySession with the user inputs and printing
-        LocalDate date = LocalDate.now();
+        LocalDate date = getValidDate(scanner);
+
         StudySession session = new StudySession(date, subject, topic, minutes, score);
         studySessions.add(session);
         System.out.println("Study session added successfully! You currently have " + studySessions.size() + " study session(s).");
@@ -199,5 +202,26 @@ public class Main {
             }
         }
         return input; // Return the valid non-empty string
+    }
+
+    public static LocalDate getValidDate(Scanner scanner) {
+        LocalDate date = null; // Initialize date variable
+        boolean validDate = false; // Flag to check if the date is valid
+
+        while(!validDate){
+            System.out.print("Enter the date (YYYY-MM-DD), or press Enter for today's date: ");
+            String input = scanner.nextLine().trim();
+            if(!input.isEmpty()){
+                try {
+                    date = LocalDate.parse(input); // Attempt to parse the input string to a LocalDate
+                    validDate = true; // If parsing is successful, set validDate to true
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format. Please enter the date in YYYY-MM-DD format.");
+                }
+            } else {
+                return LocalDate.now(); // If the input is empty, return the current date
+            }
+        }
+        return date;
     }
 }

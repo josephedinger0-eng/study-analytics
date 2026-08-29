@@ -93,4 +93,29 @@ public class StudyAnalytics {
         }
         return dateMinutes; // Return the TreeMap containing total minutes by date
     }
+
+    // Method to calculate the longest streak of consecutive days with study sessions
+    public int getLongestStreak(){
+        if (studySessions.isEmpty()) {
+            return 0; // Return 0 if there are no study sessions
+        }
+
+        TreeMap<LocalDate, Integer> dateMinutes = getMinutesByDate();
+        int longestStreak = 1;
+        int currentStreak = 1;
+
+        for(int i = 1; i < dateMinutes.size(); i++) {
+            LocalDate previousDate = (LocalDate) dateMinutes.keySet().toArray()[i - 1];
+            LocalDate currentDate = (LocalDate) dateMinutes.keySet().toArray()[i];
+
+            if(previousDate.plusDays(1).equals(currentDate)) {
+                currentStreak++;
+            } else {
+                longestStreak = Math.max(longestStreak, currentStreak);
+                currentStreak = 1;
+            }
+        }
+        longestStreak = Math.max(longestStreak, currentStreak); // Check at the end of the loop
+        return longestStreak; // Return the longest study streak in days
+    }
 }
