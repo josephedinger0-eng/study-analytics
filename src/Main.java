@@ -14,7 +14,7 @@ public class Main {
 
         // Creating objects and variables
         Scanner scanner = new Scanner(System.in);
-        ArrayList<StudySession> studySessions = new ArrayList<>();
+        ArrayList<StudySession> studySessions = StudyDataManager.loadSessions(); // Load existing study sessions from CSV
         StudyAnalytics analytics = new StudyAnalytics(studySessions);
         boolean running = true;
 
@@ -26,7 +26,7 @@ public class Main {
             System.out.println("1. Add a new study session");
             System.out.println("2. View all study sessions");
             System.out.println("3. View study session summary");
-            System.out.println("4. Exit");
+            System.out.println("4. Save & Exit");
             System.out.print("Please select an option (1-4): ");
 
             int choice = 0;
@@ -37,6 +37,7 @@ public class Main {
              * It handles InputMismatchExceptions to ensure the user enters a valid integer.
              */
             while (!validChoice) {
+
                 try {
                     choice = scanner.nextInt();
                     scanner.nextLine(); // Consume the newline character
@@ -98,6 +99,7 @@ public class Main {
                     break;
                     }
                 case 4: 
+                    StudyDataManager.saveSessions(studySessions); // Save study sessions to CSV
                     running = false;
                     System.out.println("Exiting the Study Session Tracker. Goodbye!");
                     break;
