@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
+import java.util.Scanner;
 
 public class StudyAnalyticsTest {
     
@@ -360,6 +360,58 @@ public class StudyAnalyticsTest {
             assertEquals(sessions.get(i).getMinutes(), loadedSessions.get(i).getMinutes());
             assertEquals(sessions.get(i).getScore(), loadedSessions.get(i).getScore(), 0.001);
         }
+    }
+
+    /*
+    * Test getValidScore with valid, invalid, and boundary inputs
+    */
+    @Test
+    public void testGetValidScore(){
+        // Test that a valid score input is correctly parsed
+        Scanner scanner = new Scanner("85\nabc\n100\n0\n-5\n50.5\n");
+
+        assertEquals(85.0, Main.getValidScore(scanner), 0.001);
+        assertEquals(100.0, Main.getValidScore(scanner), 0.001);
+        assertEquals(0.0, Main.getValidScore(scanner), 0.001);
+        
+        // Test that an invalid score input is rejected and the user is prompted again
+        assertEquals(50.5, Main.getValidScore(scanner), 0.001);
+    }
+
+    /*
+     * Test getPositiveInteger with valid and invalid inputs
+     */
+    @Test
+    public void testGetPositiveInteger(){
+        // Test that a valid positive integer input is correctly parsed
+        Scanner scanner = new Scanner("30\n-5\nabc\n0\n50\n");
+
+        assertEquals(30, Main.getPositiveInteger(scanner));
+        assertEquals(50, Main.getPositiveInteger(scanner));
+    }
+
+    /*
+    * Test getNonEmptyString with whitespace-only and valid inputs
+    */
+    @Test
+    public void testGetNonEmptyString() {
+        // Test that a valid non-empty string input is correctly parsed
+        Scanner scanner = new Scanner("     \n\n   Science   \n\n");
+
+        assertEquals("Science", Main.getNonEmptyString(scanner, "Enter a non-empty string: "));
+    }
+
+    /*
+     * Test getValidDate with valid and invalid date inputs
+     */
+    @Test
+    public void testGetValidDate() {
+        // Test that a valid date input is correctly parsed
+        Scanner scanner = new Scanner("2026-08-01\ninvalid-date\n2026-08-02\n\n");
+
+        assertEquals(LocalDate.of(2026, 8, 1), Main.getValidDate(scanner));
+        assertEquals(LocalDate.of(2026, 8, 2), Main.getValidDate(scanner));
+        assertEquals(LocalDate.now(), Main.getValidDate(scanner)); // If the empty is invalid, it should return the current date
     }
 
     /*

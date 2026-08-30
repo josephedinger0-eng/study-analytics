@@ -29,28 +29,7 @@ public class Main {
             System.out.println("4. Save & Exit");
             System.out.print("Please select an option (1-4): ");
 
-            int choice = 0;
-            boolean validChoice = false;
-
-            /*
-             * This loop continues until a valid choice between 1 and 4 is entered.
-             * It handles InputMismatchExceptions to ensure the user enters a valid integer.
-             */
-            while (!validChoice) {
-
-                try {
-                    choice = scanner.nextInt();
-                    scanner.nextLine(); // Consume the newline character
-                    if (choice < 1 || choice > 4) {
-                        System.out.println("Invalid input: Please select a number between 1 and 4.");
-                    } else {
-                        validChoice = true;
-                    }
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input: Please enter an integer.");
-                    scanner.next(); // Clear the invalid input
-                }
-            }
+            int choice = getMenuChoice(scanner); // Get the user's menu choice
 
             /*
              * This switch statement handles the user's choice and executes the corresponding action.
@@ -68,36 +47,9 @@ public class Main {
                     if(studySessions.isEmpty()) {
                         System.out.println("No study sessions recorded yet.");
                     } else {
-                        int totalMinutes = analytics.getTotalMinutes();
-                        double averageScore = analytics.getAverageScore();
-                        HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();
-                        HashMap<String, Double> topicAverageScores = analytics.getAverageScoreByTopic();
-                        TreeMap<LocalDate, Integer> dateMinutes = analytics.getMinutesByDate();
-                        int longestStreak = analytics.getLongestStreak();
-                        
-                        System.out.println("\nStudy Summary");
-                        System.out.println("-------------------------");
-                        
-                        System.out.println("\nTotal Study Time: " + totalMinutes + " minutes");
-                        System.out.println("Longest Study Streak: " + longestStreak + " days");
-                        System.out.printf("Average Score: %.1f%n", averageScore);
-                        
-                        System.out.println("\nStudy Time by Subject:");
-                        for (String subjectA : subjectMinutes.keySet()) {
-                            System.out.println("  " + subjectA + ": " + subjectMinutes.get(subjectA) + " minutes");
-                        }
-                        
-                        System.out.println("\nAverage Scores by Topic:");
-                        for(String topicA : topicAverageScores.keySet()) {
-                            System.out.printf("  %s: %.1f%n", topicA, topicAverageScores.get(topicA));
-                        }
-
-                        System.out.println("\nStudy Time by Date:");
-                        for (LocalDate dateA : dateMinutes.keySet()) {
-                            System.out.println("  " + dateA + ": " + dateMinutes.get(dateA) + " minutes");
-                        }
+                        displaySummary(analytics, studySessions);
+                    }   
                     break;
-                    }
                 case 4: 
                     StudyDataManager.saveSessions(studySessions); // Save study sessions to CSV
                     running = false;
@@ -206,6 +158,7 @@ public class Main {
         return input; // Return the valid non-empty string
     }
 
+    // Method to get a valid date from the user
     public static LocalDate getValidDate(Scanner scanner) {
         LocalDate date = null; // Initialize date variable
         boolean validDate = false; // Flag to check if the date is valid
@@ -225,5 +178,62 @@ public class Main {
             }
         }
         return date;
+    }
+
+    // Method to get a valid menu choice from the user
+    public static int getMenuChoice(Scanner scanner) {
+        int choice = 0; // Initialize choice variable
+        boolean validChoice = false; // Flag to check if the choice is valid
+
+        /*
+         * This loop continues until a valid choice between 1 and 4 is entered.
+         * It handles InputMismatchExceptions to ensure the user enters a valid integer.
+         */
+        while (!validChoice) {
+            try {
+                choice = scanner.nextInt(); // Attempt to read an integer from the user
+                scanner.nextLine(); // Consume the newline character
+                if (choice < 1 || choice > 4) {
+                    System.out.println("Invalid input: Please select a number between 1 and 4.");
+                } else {
+                    validChoice = true; // If the choice is valid, set validChoice to true
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input: Please enter an integer.");
+                scanner.next(); // Clear the invalid input
+            }
+        }
+        return choice; // Return the valid menu choice
+    }
+
+    public static void displaySummary(StudyAnalytics analytics, ArrayList<StudySession> studySessions) {
+        int totalMinutes = analytics.getTotalMinutes();
+        double averageScore = analytics.getAverageScore();
+        HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();
+        HashMap<String, Double> topicAverageScores = analytics.getAverageScoreByTopic();
+        TreeMap<LocalDate, Integer> dateMinutes = analytics.getMinutesByDate();
+        int longestStreak = analytics.getLongestStreak();
+        
+        System.out.println("\nStudy Summary");
+        System.out.println("-------------------------");
+        
+        System.out.println("\nTotal Study Time: " + totalMinutes + " minutes");
+        System.out.println("Longest Study Streak: " + longestStreak + " days");
+        System.out.printf("Average Score: %.1f%n", averageScore);
+        
+        System.out.println("\nStudy Time by Subject:");
+        for (String subjectA : subjectMinutes.keySet()) {
+            System.out.println("  " + subjectA + ": " + subjectMinutes.get(subjectA) + " minutes");
+        }
+        
+        System.out.println("\nAverage Scores by Topic:");
+        for(String topicA : topicAverageScores.keySet()) {
+            System.out.printf("  %s: %.1f%n", topicA, topicAverageScores.get(topicA));
+        }
+
+        System.out.println("\nStudy Time by Date:");
+        for (LocalDate dateA : dateMinutes.keySet()) {
+            System.out.println("  " + dateA + ": " + dateMinutes.get(dateA) + " minutes");
+        }
     }
 }
