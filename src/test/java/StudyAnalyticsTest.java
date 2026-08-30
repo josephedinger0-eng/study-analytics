@@ -458,7 +458,7 @@ public class StudyAnalyticsTest {
     @Test
     public void testDisplayStudySessionsEmptyList(){
         ArrayList<StudySession> sessions = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner("");
 
 
         assertDoesNotThrow(() -> Main.displayStudySessions(sessions, scanner));
@@ -472,6 +472,7 @@ public class StudyAnalyticsTest {
         Scanner scanner = new Scanner("3\nabc\n2\n1");
 
         assertEquals(2, Main.getSessionSortChoice(scanner));
+        assertEquals(1, Main.getSessionSortChoice(scanner));
     }
 
     /*
