@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.TreeMap;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 
 /* 
  * Main class for the Study Session Tracker application.
@@ -39,9 +40,7 @@ public class Main {
                     addStudySession(scanner, studySessions);
                     break;
                 case 2:
-                    for(StudySession sessionA : studySessions) {
-                        System.out.println(sessionA.toString());
-                    }
+                    displayStudySessions(studySessions);
                     break;
                 case 3:
                     if(studySessions.isEmpty()) {
@@ -206,6 +205,7 @@ public class Main {
         return choice; // Return the valid menu choice
     }
 
+    // Method to display a summary of all study sessions
     public static void displaySummary(StudyAnalytics analytics, ArrayList<StudySession> studySessions) {
         int totalMinutes = analytics.getTotalMinutes();
         double averageScore = analytics.getAverageScore();
@@ -236,4 +236,20 @@ public class Main {
             System.out.println("  " + dateA + ": " + dateMinutes.get(dateA) + " minutes");
         }
     }
+
+    // Method to sort study session by date
+    public static void displayStudySessions(ArrayList<StudySession> studySessions){
+        ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions);
+
+        for(StudySession session : sortedSessions){
+            System.out.println(session);
+        }
+    }
+
+    // Method to sort by date
+    public static ArrayList<StudySession> getSortedSessions(ArrayList<StudySession> studySessions) {
+        ArrayList<StudySession> sortedSessions = new ArrayList<>(studySessions);
+        sortedSessions.sort(Comparator.comparing(StudySession::getDate).reversed());
+        return sortedSessions;
+    } 
 }

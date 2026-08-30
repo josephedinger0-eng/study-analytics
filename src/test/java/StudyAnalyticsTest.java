@@ -415,6 +415,36 @@ public class StudyAnalyticsTest {
     }
 
     /*
+    * Test getSortedSessions with out of order dates
+    */
+    @Test
+    public void testGetSortedSessions() {
+        // Create test sessions
+        StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.of(2026, 8, 5), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 3), "Math", "Algebra", 60, 100);
+
+        // Create arraylist to store sessions, and add sessions to arraylist
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        // Create sorted arraylist
+        ArrayList<StudySession> sortedSessions = Main.getSortedSessions(sessions);
+
+        // Ensure that dates match the expected order
+        assertEquals(LocalDate.of(2026,8, 5), sortedSessions.get(0).getDate());
+        assertEquals(LocalDate.of(2026,8, 3), sortedSessions.get(1).getDate());
+        assertEquals(LocalDate.of(2026,8, 1), sortedSessions.get(2).getDate());
+
+        // Ensure that original arraylist is unchanged
+        assertEquals(LocalDate.of(2026,8, 1), sessions.get(0).getDate());
+        assertEquals(LocalDate.of(2026,8, 5), sessions.get(1).getDate());
+        assertEquals(LocalDate.of(2026,8, 3), sessions.get(2).getDate());
+    }
+
+    /*
      * Clean up the test file after each test
      */
     @AfterEach
