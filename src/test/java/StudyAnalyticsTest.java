@@ -445,6 +445,17 @@ public class StudyAnalyticsTest {
     }
 
     /*
+    * Test that displayStudySessions handles empty lists
+    */
+    @Test
+    public void testDisplayStudySessionsEmptyList(){
+        ArrayList<StudySession> sessions = new ArrayList<>();
+
+        assertDoesNotThrow(() -> Main.displayStudySessions(sessions));
+    }
+
+
+    /*
      * Clean up the test file after each test
      */
     @AfterEach

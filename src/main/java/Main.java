@@ -239,6 +239,10 @@ public class Main {
 
     // Method to sort study session by date
     public static void displayStudySessions(ArrayList<StudySession> studySessions){
+        if (studySessions.isEmpty()) {
+            System.out.println("No study sessions recorded yet.");
+            return;
+        }
         ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions);
 
         for(StudySession session : sortedSessions){
