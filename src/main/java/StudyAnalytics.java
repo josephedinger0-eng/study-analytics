@@ -103,19 +103,22 @@ public class StudyAnalytics {
         TreeMap<LocalDate, Integer> dateMinutes = getMinutesByDate();
         int longestStreak = 1;
         int currentStreak = 1;
+        LocalDate previousDate = null;
 
-        for(int i = 1; i < dateMinutes.size(); i++) {
-            LocalDate previousDate = (LocalDate) dateMinutes.keySet().toArray()[i - 1];
-            LocalDate currentDate = (LocalDate) dateMinutes.keySet().toArray()[i];
-
-            if(previousDate.plusDays(1).equals(currentDate)) {
-                currentStreak++;
-            } else {
-                longestStreak = Math.max(longestStreak, currentStreak);
-                currentStreak = 1;
+        for(LocalDate currentDate : dateMinutes.keySet()){
+            if(previousDate != null){
+                if(previousDate.plusDays(1).equals(currentDate)){
+                    currentStreak++;
+                } else {
+                    longestStreak = Math.max(longestStreak, currentStreak); // Check at the end of the loop
+                    currentStreak = 1;
+                }
             }
+            previousDate = currentDate;
         }
-        longestStreak = Math.max(longestStreak, currentStreak); // Check at the end of the loop
-        return longestStreak; // Return the longest study streak in days
+        
+        longestStreak = Math.max(longestStreak, currentStreak);
+
+        return longestStreak;
     }
 }

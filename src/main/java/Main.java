@@ -47,7 +47,7 @@ public class Main {
                     if(studySessions.isEmpty()) {
                         System.out.println("No study sessions recorded yet.");
                     } else {
-                        displaySummary(analytics, studySessions);
+                        displaySummary(analytics);
                     }   
                     break;
                 case 4:
@@ -189,7 +189,7 @@ public class Main {
         boolean validChoice = false; // Flag to check if the choice is valid
 
         /*
-         * This loop continues until a valid choice between 1 and 4 is entered.
+         * This loop continues until a valid choice between 1 and 5 is entered.
          * It handles InputMismatchExceptions to ensure the user enters a valid integer.
          */
         while (!validChoice) {
@@ -197,7 +197,7 @@ public class Main {
                 choice = scanner.nextInt(); // Attempt to read an integer from the user
                 scanner.nextLine(); // Consume the newline character
                 if (choice < 1 || choice > 5) {
-                    System.out.println("Invalid input: Please select a number between 1 and 4.");
+                    System.out.println("Invalid input: Please select a number between 1 and 5.");
                 } else {
                     validChoice = true; // If the choice is valid, set validChoice to true
                 }
@@ -210,7 +210,7 @@ public class Main {
     }
 
     // Method to display a summary of all study sessions
-    public static void displaySummary(StudyAnalytics analytics, ArrayList<StudySession> studySessions) {
+    public static void displaySummary(StudyAnalytics analytics) {
         int totalMinutes = analytics.getTotalMinutes();
         double averageScore = analytics.getAverageScore();
         HashMap<String, Integer> subjectMinutes = analytics.getMinutesBySubject();

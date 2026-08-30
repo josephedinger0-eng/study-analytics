@@ -32,7 +32,7 @@ public class StudyDataManager {
                 writer.newLine(); // Move to the next line after writing the header
 
                 for (StudySession session : studySessions) {
-                    String line = session.getDate() + ",\"" + session.getSubject() + "\",\"" + session.getTopic() + "\",\"" + session.getMinutes() + "\",\"" + session.getScore() + "\"";
+                    String line = session.getDate() + ",\"" + session.getSubject() + "\",\"" + session.getTopic() + "\"," + session.getMinutes() + "," + session.getScore() + "";
                     writer.write(line); // Write each study session as a line in the CSV file
                     writer.newLine(); // Move to the next line after writing each session
                 }

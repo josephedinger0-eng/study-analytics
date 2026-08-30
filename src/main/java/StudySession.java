@@ -68,7 +68,6 @@ public class StudySession {
                 ", subject = '" + subject + '\'' +
                 ", topic = '" + topic + '\'' +
                 ", minutes = " + minutes +
-                ", score = " + score +
-                '}'; 
+                ", score = " + score; 
     }
 }
