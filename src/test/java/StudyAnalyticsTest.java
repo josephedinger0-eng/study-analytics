@@ -24,12 +24,21 @@ public class StudyAnalyticsTest {
         sessions.add(session2);
         sessions.add(session3);
 
+        // Create empty ArrayList to test the edge case of no study sessions
+        ArrayList<StudySession> emptySessions = new ArrayList<>();
+
         // Create a StudyAnalytics object with the sample sessions
         StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Create a StudyAnalytics object with the empty list of sessions
+        StudyAnalytics emptyAnalytics = new StudyAnalytics(emptySessions);
 
         // Calculate the total minutes and assert the expected value
         int totalMinutes = analytics.getTotalMinutes();
         assertEquals(135, totalMinutes); // 30 + 45 + 60 = 135
+        
+        // Calculate the total minutes for the empty list and assert the expected value
+        assertEquals(0, emptyAnalytics.getTotalMinutes()); // No sessions, so total minutes should be 0
     }
 
     /*
@@ -48,12 +57,21 @@ public class StudyAnalyticsTest {
         sessions.add(session2);
         sessions.add(session3);
 
+        // Create empty ArrayList to test the edge case of no study sessions
+        ArrayList<StudySession> emptySessions = new ArrayList<>();
+
         // Create a StudyAnalytics object with the sample sessions
         StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Create a StudyAnalytics object with the empty list of sessions
+        StudyAnalytics emptyAnalytics = new StudyAnalytics(emptySessions);
 
         // Calculate the average score and assert the expected value
         double averageScore = analytics.getAverageScore();
         assertEquals(90.00, averageScore, 0.001); // (80 + 90 + 100) / 3 = 90.00
+
+        // Calculate the average score for the empty list and assert the expected value
+        assertEquals(0.0, emptyAnalytics.getAverageScore(), 0.001); // No sessions, so average score should be 0.0
     }
 
     /*
@@ -72,6 +90,10 @@ public class StudyAnalyticsTest {
         sessions.add(session2);
         sessions.add(session3);
 
+        // Create empty ArrayList to test the edge case of no study sessions
+        ArrayList<StudySession> emptySessions = new ArrayList<>();
+        StudyAnalytics emptyAnalytics = new StudyAnalytics(emptySessions);
+
         /* 
          * Create a StudyAnalytics object with the sample sessions
          * and get the breakdown of total study time by subject
@@ -88,6 +110,9 @@ public class StudyAnalyticsTest {
         assertEquals(45, scienceMinutes); // Only one session of Science
 
         assertEquals(2, minutesBySubject.size()); // There should be two subjects: Math and Science
+    
+        // Calculate the total minutes for the empty list and assert the expected value
+        assertTrue(emptyAnalytics.getMinutesBySubject().isEmpty()); // No sessions, so the HashMap should be empty
     }
 
     /*
@@ -106,8 +131,14 @@ public class StudyAnalyticsTest {
         sessions.add(session2);
         sessions.add(session3);
 
+        // Create empty ArrayList to test the edge case of no study sessions
+        ArrayList<StudySession> emptySessions = new ArrayList<>();
+
         // Create a StudyAnalytics object with the sample sessions
         StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Create a StudyAnalytics object with the empty list of sessions
+        StudyAnalytics emptyAnalytics = new StudyAnalytics(emptySessions);
 
         // Get the breakdown of average scores by topic
         HashMap<String, Double> averageScoreByTopic = analytics.getAverageScoreByTopic();
@@ -121,6 +152,9 @@ public class StudyAnalyticsTest {
         assertEquals(90.0, biologyAverageScore, 0.001); // Only one session of Biology
 
         assertEquals(2, averageScoreByTopic.size()); // There should be two topics: Algebra and Biology
+    
+        // Calculate the average score for the empty list and assert the expected value
+        assertTrue(emptyAnalytics.getAverageScoreByTopic().isEmpty()); // No sessions, so the HashMap should be empty
     }
 
     @Test
@@ -136,8 +170,14 @@ public class StudyAnalyticsTest {
         sessions.add(session2);
         sessions.add(session3);
 
+        // Create empty ArrayList to test the edge case of no study sessions
+        ArrayList<StudySession> emptySessions = new ArrayList<>();
+
         // Create a StudyAnalytics object with the sample sessions
         StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Create a StudyAnalytics object with the empty list of sessions
+        StudyAnalytics emptyAnalytics = new StudyAnalytics(emptySessions);
 
         // Get the breakdown of total study time by date
         TreeMap<LocalDate, Integer> minutesByDate = analytics.getMinutesByDate();
@@ -145,7 +185,8 @@ public class StudyAnalyticsTest {
         // Calculate the total minutes for today and assert the expected value
         assertEquals(75, minutesByDate.get(LocalDate.now())); // 30 + 45 = 75
         assertEquals(60, minutesByDate.get(LocalDate.of(2026, 8, 1))); // Only one session on this date
-        assertEquals(2, minutesByDate.size()); // There should be two dates in the
+        assertEquals(2, minutesByDate.size()); // There should be two dates in the TreeMap
+        assertTrue(emptyAnalytics.getMinutesByDate().isEmpty()); // No sessions, so the TreeMap should be empty
     }
 
     @Test
@@ -163,11 +204,18 @@ public class StudyAnalyticsTest {
         sessions.add(session3);
         sessions.add(session4);
 
+        // Create empty ArrayList to test the edge case of no study sessions
+        ArrayList<StudySession> emptySessions = new ArrayList<>();
+
         // Create a StudyAnalytics object with the sample sessions
         StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Create a StudyAnalytics object with the empty list of sessions
+        StudyAnalytics emptyAnalytics = new StudyAnalytics(emptySessions);
 
         // Calculate the longest study streak and assert the expected value
         int longestStreak = analytics.getLongestStreak();
         assertEquals(3, longestStreak); // The longest streak is from Aug 1 to Aug 3 (3 days)
+        assertEquals(0, emptyAnalytics.getLongestStreak()); // No sessions, so longest streak should be 0
     }
 }
