@@ -260,14 +260,30 @@ public class StudyAnalyticsTest {
     }
 
     /*
+     * Test the loadSessions method when the file does not exist
+     */
+    @Test
+    public void testLoadSessionsWhenFileDoesNotExist() {
+        StudyDataManager.setFilePath("data/nonexistent-sessions.csv"); // Set a file path that does not exist
+
+        // Load the sessions from the non-existent CSV file
+        ArrayList<StudySession> loadedSessions = StudyDataManager.loadSessions();
+
+        // Assert that the loaded sessions list is empty
+        assertTrue(loadedSessions.isEmpty());
+    }
+
+    /*
      * Clean up the test file after each test
      */
     @AfterEach
     public void cleanUp() {
         try {
             Files.deleteIfExists(Paths.get("data/test-sessions.csv")); // Clean up the test file after each test
+            Files.deleteIfExists(Paths.get("data/nonexistent-sessions.csv")); // Clean up the non-existent test file after each test
         } catch (IOException e) {
             System.out.println("Error cleaning up test file: " + e.getMessage());
         }
+        StudyDataManager.setFilePath("data/sessions.csv"); // Reset the file path to the default after each test
     }
 }
