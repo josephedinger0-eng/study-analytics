@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.time.LocalDate;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+import org.junit.jupiter.api.AfterEach;
 
 
 public class StudyAnalyticsTest {
@@ -217,5 +221,53 @@ public class StudyAnalyticsTest {
         int longestStreak = analytics.getLongestStreak();
         assertEquals(3, longestStreak); // The longest streak is from Aug 1 to Aug 3 (3 days)
         assertEquals(0, emptyAnalytics.getLongestStreak()); // No sessions, so longest streak should be 0
+    }
+
+    /*
+     * Test the saveSessions and loadSessions methods
+     */
+    @Test 
+    public void testSaveAndLoadSessions() {
+
+        StudyDataManager.setFilePath("data/test-sessions.csv"); // Set a test file path for saving and loading sessions
+
+        // Create some sample study sessions
+        StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.of(2026, 8, 2), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 3), "Math", "Algebra", 60, 100);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        // Save the sessions to a CSV file
+        StudyDataManager.saveSessions(sessions);
+
+        // Load the sessions from the CSV file
+        ArrayList<StudySession> loadedSessions = StudyDataManager.loadSessions();
+
+        // Assert that the loaded sessions match the original sessions
+        assertEquals(sessions.size(), loadedSessions.size());
+        for (int i = 0; i < sessions.size(); i++) {
+            assertEquals(sessions.get(i).getDate(), loadedSessions.get(i).getDate());
+            assertEquals(sessions.get(i).getSubject(), loadedSessions.get(i).getSubject());
+            assertEquals(sessions.get(i).getTopic(), loadedSessions.get(i).getTopic());
+            assertEquals(sessions.get(i).getMinutes(), loadedSessions.get(i).getMinutes());
+            assertEquals(sessions.get(i).getScore(), loadedSessions.get(i).getScore(), 0.001);
+        }
+    }
+
+    /*
+     * Clean up the test file after each test
+     */
+    @AfterEach
+    public void cleanUp() {
+        try {
+            Files.deleteIfExists(Paths.get("data/test-sessions.csv")); // Clean up the test file after each test
+        } catch (IOException e) {
+            System.out.println("Error cleaning up test file: " + e.getMessage());
+        }
     }
 }

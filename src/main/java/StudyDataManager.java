@@ -10,8 +10,17 @@ import java.time.LocalDate;
 
 public class StudyDataManager {
 
-    private static final String FILE_PATH = "data/sessions.csv"; // Path to the CSV file for storing study sessions
+    private static String FILE_PATH = "data/sessions.csv"; // Path to the CSV file for storing study sessions
 
+    // Set the file path for the CSV file
+    public static void setFilePath(String filePath) {
+        FILE_PATH = filePath; 
+    }
+
+    /* 
+    * Save the list of study sessions to a CSV file. Each session is written as a line in the file, with fields separated by commas.
+    * The first line of the file contains the header with field names.
+    */
     public static void saveSessions(ArrayList<StudySession> studySessions){
 
         try {
