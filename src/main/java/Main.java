@@ -384,6 +384,7 @@ public class Main {
                 }
             } catch (InputMismatchException e){
                 System.out.println("Invalid input. Please enter the number of the session you would like to select.");
+                scanner.next();
             }
         }
         return sessionIndex - 1;

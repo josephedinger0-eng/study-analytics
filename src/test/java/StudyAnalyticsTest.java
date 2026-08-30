@@ -628,6 +628,20 @@ public class StudyAnalyticsTest {
     }
 
     /*
+    * Test that getChosenSession return a valid index
+    */
+    @Test
+    public void testGetChosenSession(){
+        ArrayList<StudySession> sessions = new ArrayList<>();
+
+        sessions.add(new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80));
+        sessions.add(new StudySession(LocalDate.of(2026, 8, 2), "Science", "Biology", 45, 90));
+
+        Scanner scanner = new Scanner("abc\n0\n3\n2\n");
+        assertEquals(1, Main.getChosenSession(sessions, scanner));
+    }
+
+    /*
      * Clean up the test file after each test
      */
     @AfterEach
