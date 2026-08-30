@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
 import java.time.LocalDate;
 
 
@@ -30,6 +32,9 @@ public class StudyAnalyticsTest {
         assertEquals(135, totalMinutes); // 30 + 45 + 60 = 135
     }
 
+    /*
+     * Test the getAverageScore method
+     */
     @Test
     public void testGetAverageScore() {
         // Create some sample study sessions
@@ -49,5 +54,120 @@ public class StudyAnalyticsTest {
         // Calculate the average score and assert the expected value
         double averageScore = analytics.getAverageScore();
         assertEquals(90.00, averageScore, 0.001); // (80 + 90 + 100) / 3 = 90.00
+    }
+
+    /*
+     * Test the getMinutesBySubject method
+     */
+    @Test
+    public void testGetMinutesBySubject() {
+        // Create some sample study sessions
+        StudySession session1 = new StudySession(LocalDate.now(), "Math", "Algebra", 30, 85);
+        StudySession session2 = new StudySession(LocalDate.now(), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.now(), "Math", "Calculus", 60, 75);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        /* 
+         * Create a StudyAnalytics object with the sample sessions
+         * and get the breakdown of total study time by subject
+         */
+        StudyAnalytics analytics = new StudyAnalytics(sessions);
+        HashMap<String, Integer> minutesBySubject = analytics.getMinutesBySubject();
+
+        // Calculate the total minutes for Math and assert the expected value
+        int mathMinutes = minutesBySubject.get("Math");
+        assertEquals(90, mathMinutes); // 30 + 60 = 90
+
+        // Calculate the total minutes for Science and assert the expected value
+        int scienceMinutes = minutesBySubject.get("Science");
+        assertEquals(45, scienceMinutes); // Only one session of Science
+
+        assertEquals(2, minutesBySubject.size()); // There should be two subjects: Math and Science
+    }
+
+    /*
+     * Test the getAverageScoreByTopic method
+     */
+    @Test
+    public void testGetAverageScoreByTopic() {
+        // Create some sample study sessions
+        StudySession session1 = new StudySession(LocalDate.now(), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.now(), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.now(), "Math", "Algebra", 60, 100);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        // Create a StudyAnalytics object with the sample sessions
+        StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Get the breakdown of average scores by topic
+        HashMap<String, Double> averageScoreByTopic = analytics.getAverageScoreByTopic();
+
+        // Calculate the average score for Algebra and assert the expected value
+        double algebraAverageScore = averageScoreByTopic.get("Algebra");
+        assertEquals(90.0, algebraAverageScore, 0.001); // (80 + 100) / 2 = 90.0
+
+        // Calculate the average score for Biology and assert the expected value
+        double biologyAverageScore = averageScoreByTopic.get("Biology");
+        assertEquals(90.0, biologyAverageScore, 0.001); // Only one session of Biology
+
+        assertEquals(2, averageScoreByTopic.size()); // There should be two topics: Algebra and Biology
+    }
+
+    @Test
+    public void testGetMinutesByDate() { 
+        // Create some sample study sessions
+        StudySession session1 = new StudySession(LocalDate.now(), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.now(), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 60, 100);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        // Create a StudyAnalytics object with the sample sessions
+        StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Get the breakdown of total study time by date
+        TreeMap<LocalDate, Integer> minutesByDate = analytics.getMinutesByDate();
+
+        // Calculate the total minutes for today and assert the expected value
+        assertEquals(75, minutesByDate.get(LocalDate.now())); // 30 + 45 = 75
+        assertEquals(60, minutesByDate.get(LocalDate.of(2026, 8, 1))); // Only one session on this date
+        assertEquals(2, minutesByDate.size()); // There should be two dates in the
+    }
+
+    @Test
+    public void testGetLongestStreak(){
+        // Create some sample study sessions
+        StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.of(2026, 8, 2), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 3), "Math", "Algebra", 60, 100);
+        StudySession session4 = new StudySession(LocalDate.of(2026, 8, 5), "History", "World War II", 30, 85);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+        sessions.add(session4);
+
+        // Create a StudyAnalytics object with the sample sessions
+        StudyAnalytics analytics = new StudyAnalytics(sessions);
+
+        // Calculate the longest study streak and assert the expected value
+        int longestStreak = analytics.getLongestStreak();
+        assertEquals(3, longestStreak); // The longest streak is from Aug 1 to Aug 3 (3 days)
     }
 }
