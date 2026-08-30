@@ -434,14 +434,14 @@ public class StudyAnalyticsTest {
         ArrayList<StudySession> sortedSessions = Main.getSortedSessions(sessions);
 
         // Ensure that dates match the expected order
-        assertEquals(LocalDate.of(2026,8, 5), sortedSessions.get(0).getDate());
-        assertEquals(LocalDate.of(2026,8, 3), sortedSessions.get(1).getDate());
-        assertEquals(LocalDate.of(2026,8, 1), sortedSessions.get(2).getDate());
+        assertEquals(LocalDate.of(2026, 8, 5), sortedSessions.get(0).getDate());
+        assertEquals(LocalDate.of(2026, 8, 3), sortedSessions.get(1).getDate());
+        assertEquals(LocalDate.of(2026, 8, 1), sortedSessions.get(2).getDate());
 
         // Ensure that original arraylist is unchanged
-        assertEquals(LocalDate.of(2026,8, 1), sessions.get(0).getDate());
-        assertEquals(LocalDate.of(2026,8, 5), sessions.get(1).getDate());
-        assertEquals(LocalDate.of(2026,8, 3), sessions.get(2).getDate());
+        assertEquals(LocalDate.of(2026, 8, 1), sessions.get(0).getDate());
+        assertEquals(LocalDate.of(2026, 8, 5), sessions.get(1).getDate());
+        assertEquals(LocalDate.of(2026, 8, 3), sessions.get(2).getDate());
     }
 
     /*
