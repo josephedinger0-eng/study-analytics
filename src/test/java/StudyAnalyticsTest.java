@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 
 public class StudyAnalyticsTest {
@@ -271,6 +273,93 @@ public class StudyAnalyticsTest {
 
         // Assert that the loaded sessions list is empty
         assertTrue(loadedSessions.isEmpty());
+    }
+
+    /*
+     * Test the saveSessions and loadSessions methods with subjects and topics containing commas
+     */
+    @Test
+    public void testSaveAndLoadSessionsWithCommas(){
+        
+        StudyDataManager.setFilePath("data/test-sessions.csv"); // Set a test file path for saving and loading sessions
+
+        // Create some sample study sessions with commas in the subject and topic
+        StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math, Advanced", "Algebra, Linear Equations", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.of(2026, 8, 2), "Science", "Biology, Cell Structure", 45, 90);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+
+        // Save the sessions to a CSV file
+        StudyDataManager.saveSessions(sessions);
+
+        // Load the sessions from the CSV file
+        ArrayList<StudySession> loadedSessions = StudyDataManager.loadSessions();
+
+        // Assert that the loaded sessions match the original sessions
+        assertEquals(sessions.size(), loadedSessions.size());
+        for (int i = 0; i < sessions.size(); i++) {
+            assertEquals(sessions.get(i).getDate(), loadedSessions.get(i).getDate());
+            assertEquals(sessions.get(i).getSubject(), loadedSessions.get(i).getSubject());
+            assertEquals(sessions.get(i).getTopic(), loadedSessions.get(i).getTopic());
+            assertEquals(sessions.get(i).getMinutes(), loadedSessions.get(i).getMinutes());
+            assertEquals(sessions.get(i).getScore(), loadedSessions.get(i).getScore(), 0.001);
+        }
+    }
+
+    /*
+     * Test the parseCSVLine method to ensure it correctly handles fields with commas
+     */
+    @Test
+    public void testParseCSVLine() {
+        String line = "2026-08-01,\"Math, Advanced\",\"Algebra, Linear Equations\",30,80.0";
+        String[] expectedParts = {"2026-08-01", "Math, Advanced", "Algebra, Linear Equations", "30", "80.0"};
+        String[] actualParts = StudyDataManager.parseCSVLine(line);
+        assertArrayEquals(expectedParts, actualParts);
+    }
+
+    /*
+     * Test the loadSessions method to ensure it skips malformed rows
+     */
+    @Test
+    public void testLoadSessionsSkipsMalformedRows(){
+        
+        StudyDataManager.setFilePath("data/test-sessions.csv"); // Set a test file path for saving and loading sessions
+
+        // Create some sample study sessions, including a malformed row
+        StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.of(2026, 8, 2), "Science", "Biology", 45, 90);
+
+        // Add the sessions to a list
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+
+        // Save the sessions to a CSV file
+        StudyDataManager.saveSessions(sessions);
+
+        // Manually add a malformed row to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/test-sessions.csv", true))) {
+            writer.write("malformed,row,with,missing,fields");
+            writer.newLine();
+        } catch (IOException e) {
+            fail("Failed to write malformed row to test file: " + e.getMessage());
+        }
+
+        // Load the sessions from the CSV file
+        ArrayList<StudySession> loadedSessions = StudyDataManager.loadSessions();
+
+        // Assert that the loaded sessions match the original valid sessions and that the malformed row was skipped
+        assertEquals(sessions.size(), loadedSessions.size());
+        for (int i = 0; i < sessions.size(); i++) {
+            assertEquals(sessions.get(i).getDate(), loadedSessions.get(i).getDate());
+            assertEquals(sessions.get(i).getSubject(), loadedSessions.get(i).getSubject());
+            assertEquals(sessions.get(i).getTopic(), loadedSessions.get(i).getTopic());
+            assertEquals(sessions.get(i).getMinutes(), loadedSessions.get(i).getMinutes());
+            assertEquals(sessions.get(i).getScore(), loadedSessions.get(i).getScore(), 0.001);
+        }
     }
 
     /*
