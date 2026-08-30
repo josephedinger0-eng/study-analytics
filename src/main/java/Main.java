@@ -40,7 +40,7 @@ public class Main {
                     addStudySession(scanner, studySessions);
                     break;
                 case 2:
-                    displayStudySessions(studySessions);
+                    displayStudySessions(studySessions, scanner);
                     break;
                 case 3:
                     if(studySessions.isEmpty()) {
@@ -237,13 +237,20 @@ public class Main {
         }
     }
 
-    // Method to sort study session by date
-    public static void displayStudySessions(ArrayList<StudySession> studySessions){
+    // Method to display and sort study sessions
+    public static void displayStudySessions(ArrayList<StudySession> studySessions, Scanner scanner){        
         if (studySessions.isEmpty()) {
             System.out.println("No study sessions recorded yet.");
             return;
         }
-        ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions);
+
+        System.out.println("How would you like to sort the sessions?");
+        System.out.println("1. Sort by newest date");
+        System.out.println("2. Sort by subject");
+
+        int choice = getSessionSortChoice(scanner);
+
+        ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions, choice);
 
         for(StudySession session : sortedSessions){
             System.out.println(session);
@@ -251,9 +258,42 @@ public class Main {
     }
 
     // Method to sort by date
-    public static ArrayList<StudySession> getSortedSessions(ArrayList<StudySession> studySessions) {
+    public static ArrayList<StudySession> getSortedSessions(ArrayList<StudySession> studySessions, int choice) {
+        
         ArrayList<StudySession> sortedSessions = new ArrayList<>(studySessions);
-        sortedSessions.sort(Comparator.comparing(StudySession::getDate).reversed());
+
+        switch(choice) {
+            case 1: 
+                sortedSessions.sort(Comparator.comparing(StudySession::getDate).reversed());
+                break;
+            case 2:
+                sortedSessions.sort(Comparator.comparing(StudySession::getSubject));
+                break;
+        }
         return sortedSessions;
     } 
+
+    /*
+    * Ensure that the choice of sorting is either 1 or 2
+    */
+    public static int getSessionSortChoice(Scanner scanner){
+        int choice = 0;
+        boolean validChoice = false;
+
+        while(!validChoice){
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if(!(choice == 1 || choice == 2)){
+                    System.out.println("Invalid input: Please select either 1 or 2.");
+                } else {
+                    validChoice = true;
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Invalid input. Please enter either 1 or 2.");
+                scanner.next();
+            }
+        }
+        return choice;
+    }
 }

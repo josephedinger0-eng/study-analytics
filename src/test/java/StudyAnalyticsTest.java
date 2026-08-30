@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Scanner;
 
+
 public class StudyAnalyticsTest {
     
     /*
@@ -422,7 +423,7 @@ public class StudyAnalyticsTest {
         // Create test sessions
         StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80);
         StudySession session2 = new StudySession(LocalDate.of(2026, 8, 5), "Science", "Biology", 45, 90);
-        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 3), "Math", "Algebra", 60, 100);
+        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 3), "English", "Algebra", 60, 100);
 
         // Create arraylist to store sessions, and add sessions to arraylist
         ArrayList<StudySession> sessions = new ArrayList<>();
@@ -431,12 +432,19 @@ public class StudyAnalyticsTest {
         sessions.add(session3);
 
         // Create sorted arraylist
-        ArrayList<StudySession> sortedSessions = Main.getSortedSessions(sessions);
+        ArrayList<StudySession> sortedSessionsByDate = Main.getSortedSessions(sessions, 1);
+        ArrayList<StudySession> sortedSessionsBySubject = Main.getSortedSessions(sessions, 2);
+       
 
         // Ensure that dates match the expected order
-        assertEquals(LocalDate.of(2026, 8, 5), sortedSessions.get(0).getDate());
-        assertEquals(LocalDate.of(2026, 8, 3), sortedSessions.get(1).getDate());
-        assertEquals(LocalDate.of(2026, 8, 1), sortedSessions.get(2).getDate());
+        assertEquals(LocalDate.of(2026, 8, 5), sortedSessionsByDate.get(0).getDate());
+        assertEquals(LocalDate.of(2026, 8, 3), sortedSessionsByDate.get(1).getDate());
+        assertEquals(LocalDate.of(2026, 8, 1), sortedSessionsByDate.get(2).getDate());
+
+        // Ensure that the subjects are in alphabetical order
+        assertEquals("English", sortedSessionsBySubject.get(0).getSubject());
+        assertEquals("Math", sortedSessionsBySubject.get(1).getSubject());
+        assertEquals("Science", sortedSessionsBySubject.get(2).getSubject());
 
         // Ensure that original arraylist is unchanged
         assertEquals(LocalDate.of(2026, 8, 1), sessions.get(0).getDate());
@@ -450,10 +458,21 @@ public class StudyAnalyticsTest {
     @Test
     public void testDisplayStudySessionsEmptyList(){
         ArrayList<StudySession> sessions = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
 
-        assertDoesNotThrow(() -> Main.displayStudySessions(sessions));
+
+        assertDoesNotThrow(() -> Main.displayStudySessions(sessions, scanner));
     }
 
+    /*
+    * Test that getSessionSortChoice filters correctly
+    */
+    @Test
+    public void testGetSessionSortChoice(){
+        Scanner scanner = new Scanner("3\nabc\n2\n1");
+
+        assertEquals(2, Main.getSessionSortChoice(scanner));
+    }
 
     /*
      * Clean up the test file after each test
