@@ -24,6 +24,10 @@ public class StudySession {
         return date;
     }
 
+    public void setDate(LocalDate date){
+        this.date = date;
+    }
+
     public String getSubject() {
         return subject;
     }

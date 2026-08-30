@@ -469,10 +469,162 @@ public class StudyAnalyticsTest {
     */
     @Test
     public void testGetSessionSortChoice(){
-        Scanner scanner = new Scanner("3\nabc\n2\n1");
+        Scanner scanner = new Scanner("3\nabc\n2\n1\n");
 
         assertEquals(2, Main.getSessionSortChoice(scanner));
         assertEquals(1, Main.getSessionSortChoice(scanner));
+    }
+
+    /*
+    * Test that deleteSession removes the correct item
+    */
+    @Test
+    public void testDeleteSession(){
+        // Create test sessions
+        StudySession session1 = new StudySession(LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80);
+        StudySession session2 = new StudySession(LocalDate.of(2026, 8, 5), "Science", "Biology", 45, 90);
+        StudySession session3 = new StudySession(LocalDate.of(2026, 8, 3), "History", "WW2", 60, 100);
+
+        // Create arraylist to store sessions, and add sessions to arraylist
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        Main.deleteSession(1, sessions);
+
+        assertEquals(session1, sessions.get(0));
+        assertEquals(session3, sessions.get(1));
+        assertEquals(2, sessions.size());
+    }
+
+    /*
+    * Test that modifySession correctly modifies the subject
+    */
+    @Test
+    public void testModifySessionSubject() {
+        StudySession session = new StudySession(LocalDate.of(2026, 8, 1),"Math", "Algebra",30,80);
+
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session);
+
+        // 2 = modify subject, followed by the new subject
+        Scanner scanner = new Scanner("2\nScience\n");
+
+        Main.modifySession(0, sessions, scanner);
+
+        assertEquals("Science", sessions.get(0).getSubject());
+    }
+
+    /*
+    * Test that modifySession correctly modifies the topic
+    */
+    @Test
+    public void testModifySessionTopic() {
+        StudySession session = new StudySession(LocalDate.of(2026, 8, 1),"Math", "Algebra",30,80);
+
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session);
+
+        // 3 = modify topic, followed by the new topic
+        Scanner scanner = new Scanner("3\nIntegrals\n");
+
+        Main.modifySession(0, sessions, scanner);
+
+        assertEquals("Integrals", sessions.get(0).getTopic());
+    }
+
+    /*
+    * Test that modifySession correctly modifies the minutes
+    */
+    @Test
+    public void testModifySessionMinutes() {
+        StudySession session = new StudySession(LocalDate.of(2026, 8, 1),"Math", "Algebra",30,80);
+
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session);
+
+        // 4 = modify minutes, followed by the new minutes
+        Scanner scanner = new Scanner("4\n50\n");
+
+        Main.modifySession(0, sessions, scanner);
+
+        assertEquals(50, sessions.get(0).getMinutes());
+    }
+
+    /*
+    * Test that modifySession correctly modifies the score
+    */
+    @Test
+    public void testModifySessionScore() {
+        StudySession session = new StudySession(LocalDate.of(2026, 8, 1),"Math", "Algebra",30,80);
+
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session);
+
+        // 5 = modify score, followed by the new score
+        Scanner scanner = new Scanner("5\n95.5\n");
+
+        Main.modifySession(0, sessions, scanner);
+
+        assertEquals(95.5, sessions.get(0).getScore(), 0.001);
+    }
+
+    /*
+    * Test that modifySession correctly modifies the date
+    */
+    @Test
+    public void testModifySessionDate() {
+        StudySession session = new StudySession(LocalDate.of(2026, 8, 1),"Math", "Algebra",30,80);
+
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session);
+
+        // 1 = modify date, followed by the new date
+        Scanner scanner = new Scanner("1\n2026-08-02\n");
+
+        Main.modifySession(0, sessions, scanner);
+
+        assertEquals(LocalDate.of(2026,8,2), sessions.get(0).getDate());
+    }
+
+    /*
+    * Test displayStudySessionsForEditing with sorted sessions
+    */
+    @Test
+    public void testDisplayStudySessionsForEditingDelete() {
+        StudySession session1 = new StudySession(
+            LocalDate.of(2026, 8, 1), "Math", "Algebra", 30, 80
+        );
+        StudySession session2 = new StudySession(
+            LocalDate.of(2026, 8, 5), "Science", "Biology", 45, 90
+        );
+        StudySession session3 = new StudySession(
+            LocalDate.of(2026, 8, 3), "History", "WW2", 60, 100
+        );
+
+        ArrayList<StudySession> sessions = new ArrayList<>();
+        sessions.add(session1);
+        sessions.add(session2);
+        sessions.add(session3);
+
+        /*
+        * Input:
+        * 1 = sort by newest date
+        * 1 = select displayed session #1 (Science, Aug 5)
+        * 2 = delete session
+        */
+        Scanner scanner = new Scanner("1\n1\n2\n");
+
+        Main.displayStudySessionsForEditing(sessions, scanner);
+
+        // Science session should have been deleted
+        assertEquals(2, sessions.size());
+        assertFalse(sessions.contains(session2));
+
+        // Other sessions should remain
+        assertTrue(sessions.contains(session1));
+        assertTrue(sessions.contains(session3));
     }
 
     /*

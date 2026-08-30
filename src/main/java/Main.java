@@ -27,8 +27,9 @@ public class Main {
             System.out.println("1. Add a new study session");
             System.out.println("2. View all study sessions");
             System.out.println("3. View study session summary");
-            System.out.println("4. Save & Exit");
-            System.out.print("Please select an option (1-4): ");
+            System.out.println("4. Modify or delete a study session");
+            System.out.println("5. Save & Exit");
+            System.out.print("Please select an option (1-5): ");
 
             int choice = getMenuChoice(scanner); // Get the user's menu choice
 
@@ -49,7 +50,10 @@ public class Main {
                         displaySummary(analytics, studySessions);
                     }   
                     break;
-                case 4: 
+                case 4:
+                    displayStudySessionsForEditing(studySessions, scanner);
+                    break;
+                case 5: 
                     StudyDataManager.saveSessions(studySessions); // Save study sessions to CSV
                     running = false;
                     System.out.println("Exiting the Study Session Tracker. Goodbye!");
@@ -192,7 +196,7 @@ public class Main {
             try {
                 choice = scanner.nextInt(); // Attempt to read an integer from the user
                 scanner.nextLine(); // Consume the newline character
-                if (choice < 1 || choice > 4) {
+                if (choice < 1 || choice > 5) {
                     System.out.println("Invalid input: Please select a number between 1 and 4.");
                 } else {
                     validChoice = true; // If the choice is valid, set validChoice to true
@@ -248,12 +252,12 @@ public class Main {
         System.out.println("1. Sort by newest date");
         System.out.println("2. Sort by subject");
 
-        int choice = getSessionSortChoice(scanner);
+        int sortChoice = getSessionSortChoice(scanner);
 
-        ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions, choice);
+        ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions, sortChoice);
 
-        for(StudySession session : sortedSessions){
-            System.out.println(session);
+        for(int i = 0; i < sortedSessions.size(); i++){
+            System.out.println(i + 1 + ". " + sortedSessions.get(i));
         }
     }
 
@@ -291,6 +295,191 @@ public class Main {
                 }
             } catch (InputMismatchException e){
                 System.out.println("Invalid input. Please enter either 1 or 2.");
+                scanner.next();
+            }
+        }
+        return choice;
+    }
+
+    /*
+    * Displays every studySession and prompts user to modify/delete before passing off
+    */
+    public static void displayStudySessionsForEditing(ArrayList<StudySession> studySessions, Scanner scanner){
+        
+        // Ends method if there are no sessions
+        if (studySessions.isEmpty()) {
+            System.out.println("No study sessions recorded yet.");
+            return;
+        }
+
+        // Allows user to choose sorting method
+        System.out.println("How would you like to sort the sessions?");
+        System.out.println("1. Sort by newest date");
+        System.out.println("2. Sort by subject");
+
+        int sortChoice = getSessionSortChoice(scanner); // Gets valid choice
+
+        ArrayList<StudySession> sortedSessions = getSortedSessions(studySessions, sortChoice); // Sorts sessions into new ArrayList
+
+        // Numbers sessions
+        for(int i = 0; i < sortedSessions.size(); i++){
+            System.out.println(i + 1 + ". " + sortedSessions.get(i));
+        }
+        
+
+        // User chooses which session to edit
+        System.out.println("Please select a session to modify or delete: ");
+        int sessionIndex = getChosenSession(sortedSessions, scanner);
+        int originalIndex = -1;
+
+        // Maps the choice from the sorted array to the original array
+        for(int i = 0; i < studySessions.size(); i++){
+            if(sortedSessions.get(sessionIndex).equals(studySessions.get(i))){
+                originalIndex = i;
+                break;
+            }
+        }
+
+        // Ends method if cannot find chosen session
+        if(originalIndex == -1){
+            System.out.println("Unable to find the selected session.");
+            return;
+        }
+
+        // Prompts user to modify or delete
+        System.out.println("1. Modify session");
+        System.out.println("2. Delete session");
+        System.out.println("3. Cancel");
+        int choice = getEditChoice(scanner); // Ensures valid choice
+
+        // Passess choice off to either modify, delete, or break
+        switch (choice) {
+            case 1:
+                modifySession(originalIndex, studySessions, scanner);
+                break;
+            case 2:
+                deleteSession(originalIndex, studySessions);
+                break;
+            case 3:
+                break;
+        }
+    }
+
+    /*
+    * Method to get a user input that fits the arraylist of sessions 
+    */
+    public static int getChosenSession(ArrayList<StudySession> studySessions, Scanner scanner){
+        int sessionIndex = 0;
+        int length = studySessions.size();
+        boolean validInput = false;
+
+        while(!validInput){
+            try {
+                sessionIndex = scanner.nextInt();
+                scanner.nextLine();
+                if(sessionIndex < 1 || sessionIndex > length){
+                    System.out.println("Invalid input. Please select an existing session.");
+                } else {
+                    validInput = true;
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Invalid input. Please enter the number of the session you would like to select.");
+            }
+        }
+        return sessionIndex - 1;
+    }
+
+    /*
+    * Method to get a user choice between 1 and 3 to determine if they want to edit or end
+    */
+    public static int getEditChoice(Scanner scanner){
+        int choice = 0;
+        boolean validChoice = false;
+
+        while(!validChoice){
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if(choice > 3 || choice < 1){
+                    System.out.println("Invalid input: Please select either 1, 2, or 3.");
+                } else {
+                    validChoice = true;
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Invalid input. Please enter 1, 2, or 3.");
+                scanner.next();
+            }
+        }
+        return choice;
+    }
+
+    /* 
+    * Method to allow the user to modify a chosen quality of a session
+    */
+    public static void modifySession(int sessionIndex, ArrayList<StudySession> studySessions, Scanner scanner){
+        // Prompts user to pick a quality
+        System.out.println("Please select a quality to modify.");
+        System.out.println("1. Modify date");
+        System.out.println("2. Modify subject");
+        System.out.println("3. Modify topic");
+        System.out.println("4. Modify minutes");
+        System.out.println("5. Modify score");
+        System.out.println("6. Exit");
+
+        int choice = getModificationChoice(scanner);
+
+        // Swtich-case to modify based on the user choice
+        switch (choice) {
+            case 1:
+                System.out.print("Select a new date (yyyy-mm-dd): ");
+                LocalDate newDate = getValidDate(scanner);
+                studySessions.get(sessionIndex).setDate(newDate);
+                break;
+            case 2:
+                String newSubject = getNonEmptyString(scanner, "Select a new subject: ");
+                studySessions.get(sessionIndex).setSubject(newSubject);
+                break;
+            case 3:
+                String newTopic = getNonEmptyString(scanner, "Select a new topic: ");
+                studySessions.get(sessionIndex).setTopic(newTopic);
+                break;
+            case 4:
+                System.out.print("Select a new minute amount: ");
+                int newMinutes = getPositiveInteger(scanner);
+                studySessions.get(sessionIndex).setMinutes(newMinutes);
+                break;
+            case 5:
+                System.out.print("Select a new score: ");
+                double newScore = getValidScore(scanner);
+                studySessions.get(sessionIndex).setScore(newScore);
+                break;
+            case 6:
+                break;
+
+        }
+    }
+
+    // Method to remove a session
+    public static void deleteSession(int sessionIndex, ArrayList<StudySession> studySessions){
+        studySessions.remove(sessionIndex);
+    }
+
+    //  Method to oversee the user choosing between 1 and 6
+    public static int getModificationChoice(Scanner scanner){
+        int choice = 0;
+        boolean validChoice = false;
+
+        while(!validChoice){
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+                if(choice > 6 || choice < 1){
+                    System.out.println("Invalid input: Please select 1 - 6");
+                } else {
+                    validChoice = true;
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Invalid input. Please enter 1 - 6.");
                 scanner.next();
             }
         }
